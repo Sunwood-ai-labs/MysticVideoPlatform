@@ -6,27 +6,30 @@ import { createServer } from "http";
 
 const app = express();
 
-// Configure CORS with explicit preflight support
+// Configure CORS for development and production
 const corsOptions = {
-  origin: true, // Allow all origins
+  origin: process.env.NODE_ENV === "development"
+    ? true  // Allow all origins in development
+    : /\.replit\.dev$/,  // Only allow replit.dev domains in production
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200,
-  preflightContinue: false
+  optionsSuccessStatus: 200
 };
 
-// Enable preflight across all routes
+// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Apply CORS to all routes
+// Apply CORS middleware early in the middleware chain
 app.use(cors(corsOptions));
 
+// Then add other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 (async () => {
   try {
+    // Register routes after middleware
     registerRoutes(app);
     const server = createServer(app);
 
