@@ -1,20 +1,29 @@
 import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
 import type { Video } from "db/schema";
+import { useState } from "react";
 
 interface VideoCardProps {
   video: Video;
 }
 
 export function VideoCard({ video }: VideoCardProps) {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <Link href={`/video/${video.id}`}>
       <Card className="group overflow-hidden transition-transform hover:scale-[1.02]">
-        <div className="aspect-video overflow-hidden">
+        <div className="aspect-video overflow-hidden bg-muted">
           <img
-            src={video.thumbnailUrl}
+            src={imageError ? `https://picsum.photos/seed/${video.id}/800/450` : video.thumbnailUrl}
             alt={video.title}
             className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            onError={handleImageError}
+            loading="lazy"
           />
         </div>
         <div className="p-4">

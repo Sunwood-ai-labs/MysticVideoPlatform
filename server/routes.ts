@@ -3,12 +3,32 @@ import { db } from "../db";
 import { videos } from "../db/schema";
 import { eq } from "drizzle-orm";
 
+// Function to get a random Unsplash image
+async function getUnsplashImage() {
+  try {
+    const response = await fetch('https://api.unsplash.com/photos/random?query=abstract,nature&orientation=landscape', {
+      headers: {
+        'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data.urls.regular;
+    }
+    throw new Error('Failed to fetch from Unsplash');
+  } catch (error) {
+    console.error('Unsplash API error:', error);
+    return 'https://picsum.photos/seed/fallback/800/450';
+  }
+}
+
 const sampleVideos = [
   {
     title: "Mystical Garden",
     description: "A journey through a luminous digital garden",
     videoUrl: "https://example.com/video1.mp4",
-    thumbnailUrl: "https://picsum.photos/seed/mystical1/800/450",
+    thumbnailUrl: "https://images.unsplash.com/photo-1518818419601-72c8673f5852",
     aiGenerated: { generated: true }
   }
 ];
@@ -19,13 +39,23 @@ export function registerRoutes(app: Express) {
     res.json({ status: "healthy" });
   });
 
+  // Get thumbnail URL
+  app.get("/api/thumbnail", async (req, res) => {
+    try {
+      const thumbnailUrl = await getUnsplashImage();
+      res.json({ thumbnailUrl });
+    } catch (error) {
+      console.error('Error getting thumbnail:', error);
+      res.status(500).json({ error: "Failed to get thumbnail", thumbnailUrl: 'https://picsum.photos/seed/fallback/800/450' });
+    }
+  });
+
   // Get all videos
   app.get("/api/videos", async (req, res) => {
     try {
       console.log("Fetching all videos...");
       const allVideos = await db.select().from(videos).orderBy(videos.createdAt);
       
-      // If no videos exist, insert sample videos
       if (allVideos.length === 0) {
         console.log("No videos found, inserting sample videos...");
         const inserted = await db.insert(videos).values(sampleVideos).returning();
