@@ -26,10 +26,16 @@ async function getUnsplashImage() {
 const sampleVideos = [
   {
     title: "Mystical Garden",
-    description: "A journey through a luminous digital garden",
+    description: "神秘的なデジタルガーデンへの旅。光と色彩が織りなす幻想的な空間で、自然とテクノロジーが融合した新しい体験が広がります。デジタルアートが創り出す無限の可能性を探索してください。",
     videoUrl: "https://example.com/video1.mp4",
     thumbnailUrl: "https://images.unsplash.com/photo-1518818419601-72c8673f5852",
-    aiGenerated: { generated: true }
+    aiGenerated: { 
+      generated: true,
+      elements: ["光のパターン", "デジタルフローラ"],
+      theme: "Digital Dreamscape",
+      mood: "幻想的",
+      insight: "デジタルアートと自然の調和が織りなす、新しい次元の体験を表現しています。"
+    }
   }
 ];
 
