@@ -11,8 +11,11 @@ build = ["npm", "run", "build"]
 run = ["npm", "run", "start"]
 
 [[ports]]
-localPort = 5000
+localPort = 3001
 externalPort = 80
+
+[[ports]]
+localPort = 5000
 
 [packager]
 language = "nodejs"
@@ -37,7 +40,25 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
+args = "Push DB Schema"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
 args = "Start Full Stack App"
+
+[[workflows.workflow]]
+name = "Push DB Schema"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run db:push"
 
 [[workflows.workflow]]
 name = "Start Full Stack App"
@@ -51,5 +72,5 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev"
-waitForPort = 5000
+args = "PORT=3001 npm run dev"
+waitForPort = 3001

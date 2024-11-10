@@ -18,7 +18,7 @@ export function VideoCard({ video }: VideoCardProps) {
           />
         </div>
         <div className="p-4">
-          <h2 className="font-kaisei text-lg font-semibold text-primary line-clamp-2">
+          <h2 className="text-lg font-semibold text-primary line-clamp-2">
             {video.title}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground line-clamp-2">

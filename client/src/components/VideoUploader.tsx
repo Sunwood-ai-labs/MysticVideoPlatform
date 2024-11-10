@@ -5,18 +5,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { processVideo } from "@/lib/video";
 import { generateAIContent } from "@/lib/ai";
 import { useLocation } from "wouter";
+
+interface UploadForm {
+  video: FileList;
+  title: string;
+  description: string;
+}
 
 export function VideoUploader() {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm<UploadForm>();
+  const title = watch("title");
+  const description = watch("description");
 
-  async function onSubmit(data: any) {
+  async function onSubmit(data: UploadForm) {
     try {
       setUploading(true);
       const file = data.video[0];
@@ -24,19 +33,28 @@ export function VideoUploader() {
       // Process video and generate thumbnail
       const { videoUrl, thumbnailUrl } = await processVideo(file);
       
-      // Generate AI content
-      const aiContent = await generateAIContent(file.name);
+      // Only generate AI content if title or description is empty
+      let finalTitle = data.title;
+      let finalDescription = data.description;
+      let aiGenerated = null;
+
+      if (!data.title || !data.description) {
+        const aiContent = await generateAIContent(file.name);
+        aiGenerated = aiContent;
+        finalTitle = data.title || aiContent.title;
+        finalDescription = data.description || aiContent.description;
+      }
       
       // Upload to server
       const response = await fetch("/api/videos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: aiContent.title,
-          description: aiContent.description,
+          title: finalTitle,
+          description: finalDescription,
           videoUrl,
           thumbnailUrl,
-          aiGenerated: aiContent,
+          aiGenerated: aiGenerated || { generated: false },
         }),
       });
       
@@ -68,6 +86,27 @@ export function VideoUploader() {
               accept="video/*"
               disabled={uploading}
               {...register("video", { required: true })}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="title">Title (optional - AI will generate if empty)</Label>
+            <Input
+              id="title"
+              type="text"
+              disabled={uploading}
+              placeholder="Enter video title..."
+              {...register("title")}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="description">Description (optional - AI will generate if empty)</Label>
+            <Textarea
+              id="description"
+              disabled={uploading}
+              placeholder="Enter video description..."
+              {...register("description")}
             />
           </div>
           

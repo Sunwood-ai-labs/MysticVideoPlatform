@@ -10,15 +10,25 @@ export class FetchError extends Error {
 
 // Fetcher function for SWR that includes credentials and handles non-200 responses
 export const fetcher = async (url: string) => {
-  const res = await fetch(url, {
-    credentials: "include",
+  // Use the current origin in production, and port 3001 in development
+  const baseUrl = process.env.NODE_ENV === 'development'
+    ? `${window.location.protocol}//${window.location.hostname}:3001`
+    : '';
+    
+  const res = await fetch(baseUrl + url, {
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    }
   });
 
+  // For non-200 responses
   if (!res.ok) {
     const error = new FetchError(
-      `A ${res.status} error occurred while fetching the data.`,
+      'An error occurred while fetching the data.',
       await res.json(),
-      res.status,
+      res.status
     );
     throw error;
   }

@@ -10,7 +10,7 @@ export default function Upload() {
           <Link href="/">
             <Button variant="outline">← Back</Button>
           </Link>
-          <h1 className="font-kaisei text-3xl font-bold text-primary">
+          <h1 className="text-3xl font-bold text-primary">
             Upload Video
           </h1>
         </div>

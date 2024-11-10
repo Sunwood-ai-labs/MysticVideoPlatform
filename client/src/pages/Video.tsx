@@ -29,13 +29,13 @@ export default function VideoPage() {
         <VideoPlayer url={video.videoUrl} />
 
         <Card className="mt-8 p-6">
-          <h1 className="font-kaisei text-3xl font-bold text-primary">
+          <h1 className="text-3xl font-bold text-primary">
             {video.title}
           </h1>
           <p className="mt-4 text-muted-foreground">{video.description}</p>
           
           <div className="mt-8">
-            <h2 className="font-kaisei text-xl font-semibold text-primary">
+            <h2 className="text-xl font-semibold text-primary">
               AI Generated Content
             </h2>
             <pre className="mt-4 whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm">

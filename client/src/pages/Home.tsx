@@ -8,14 +8,14 @@ export default function Home() {
   const { data: videos } = useSWR<Video[]>("/api/videos");
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background text-foreground p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
-          <h1 className="font-kaisei text-4xl font-bold text-primary">
+          <h1 className="text-4xl font-bold text-primary">
             Mystical Videos
           </h1>
           <Link href="/upload">
-            <Button className="bg-primary hover:bg-primary/90">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
               Upload Video
             </Button>
           </Link>
