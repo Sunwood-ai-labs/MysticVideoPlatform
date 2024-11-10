@@ -14,6 +14,8 @@ export default function VideoPage() {
   const { toast } = useToast();
 
   const handleLike = async () => {
+    if (!id) return;
+
     try {
       const response = await fetch(`/api/videos/${id}/like`, {
         method: "POST",
@@ -62,8 +64,8 @@ export default function VideoPage() {
               className="gap-2"
               onClick={handleLike}
             >
-              <Heart className={video.likesCount > 0 ? "fill-primary" : ""} />
-              <span>{video.likesCount || 0}</span>
+              <Heart className={(video.likesCount ?? 0) > 0 ? "fill-primary" : ""} />
+              <span>{video.likesCount ?? 0}</span>
             </Button>
           </div>
           <p className="mt-4 text-muted-foreground">{video.description}</p>
@@ -78,7 +80,11 @@ export default function VideoPage() {
           </div>
         </Card>
 
-        <CommentSection videoId={parseInt(id)} />
+        {id && (
+          <div className="mt-8">
+            <CommentSection videoId={parseInt(id)} />
+          </div>
+        )}
       </div>
     </div>
   );
