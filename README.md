@@ -2,6 +2,8 @@
   <h1>✨ Mystical Video Platform</h1>
   <p>AIパワードのアーティスティック・ビデオプラットフォーム</p>
 
+  https://github.com/user-attachments/assets/ef51fc64-6f8a-485b-889b-974d90906bf0
+
   <div align="center">
     <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
     <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
