@@ -6,28 +6,21 @@ import { createServer } from "http";
 
 const app = express();
 
-// Configure CORS for all environments
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Allow any subdomain from replit.dev
-    if (origin.endsWith('.replit.dev') || origin.includes('.repl.co')) {
-      return callback(null, true);
-    }
-    
-    // In production, use specific origin
-    if (process.env.NODE_ENV === 'production' && process.env.PRODUCTION_URL) {
-      return callback(null, process.env.PRODUCTION_URL === origin);
-    }
-    
-    callback(new Error('Not allowed by CORS'));
-  },
+// Configure CORS with explicit preflight support
+const corsOptions = {
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  optionsSuccessStatus: 200,
+  preflightContinue: false
+};
+
+// Enable preflight across all routes
+app.options('*', cors(corsOptions));
+
+// Apply CORS to all routes
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

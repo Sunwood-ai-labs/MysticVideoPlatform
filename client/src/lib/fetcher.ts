@@ -13,7 +13,7 @@ export const fetcher = async (url: string) => {
   // Use the current origin in production, and port 3001 in development
   const baseUrl = process.env.NODE_ENV === 'development'
     ? `${window.location.protocol}//${window.location.hostname}:3001`
-    : '';
+    : window.location.origin;
     
   const res = await fetch(baseUrl + url, {
     credentials: 'include',

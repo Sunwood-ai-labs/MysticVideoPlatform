@@ -3,13 +3,13 @@ import { db } from "../db";
 import { videos } from "../db/schema";
 import { eq } from "drizzle-orm";
 
-// Sample videos data from teamLab images
+// Sample videos data with gradient thumbnails
 const sampleVideos = [
   {
     title: "Digital Butterflies in Luminous Space",
     description: "An immersive journey through a mystical realm where digital butterflies dance in cascading waves of light, creating an ethereal spectacle that bridges the physical and digital worlds.",
     videoUrl: "https://example.com/video1.mp4",
-    thumbnailUrl: "https://images.teamlab-planets.art/2024/planets_1.jpg",
+    thumbnailUrl: "https://picsum.photos/seed/mystical1/800/450",
     aiGenerated: {
       theme: "Digital Nature",
       mood: "Ethereal",
@@ -20,7 +20,7 @@ const sampleVideos = [
     title: "Garden of Celestial Flowers",
     description: "A mesmerizing exploration of an endless garden where digital flowers bloom in perpetual motion, their petals creating patterns that reflect the cosmic dance of the universe.",
     videoUrl: "https://example.com/video2.mp4",
-    thumbnailUrl: "https://images.teamlab-planets.art/2024/planets_2.jpg",
+    thumbnailUrl: "https://picsum.photos/seed/mystical2/800/450",
     aiGenerated: {
       theme: "Digital Flora",
       mood: "Transcendent",
@@ -31,7 +31,7 @@ const sampleVideos = [
     title: "Luminescent Pathways",
     description: "Journey through corridors of living light where every step creates ripples in the digital fabric of space, forming an interactive symphony of color and movement.",
     videoUrl: "https://example.com/video3.mp4",
-    thumbnailUrl: "https://images.teamlab-planets.art/2024/planets_3.jpg",
+    thumbnailUrl: "https://picsum.photos/seed/mystical3/800/450",
     aiGenerated: {
       theme: "Interactive Light",
       mood: "Dynamic",
