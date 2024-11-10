@@ -1,27 +1,9 @@
 import type { Express } from "express";
 import { db } from "../db";
-import { videos } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { videos, comments } from "../db/schema";
+import { eq, sql } from "drizzle-orm";
 
-// Function to get a random Unsplash image
-async function getUnsplashImage() {
-  try {
-    const response = await fetch('https://api.unsplash.com/photos/random?query=abstract,nature&orientation=landscape', {
-      headers: {
-        'Authorization': `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}`
-      }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      return data.urls.regular;
-    }
-    throw new Error('Failed to fetch from Unsplash');
-  } catch (error) {
-    console.error('Unsplash API error:', error);
-    return 'https://picsum.photos/seed/fallback/800/450';
-  }
-}
+// Existing getUnsplashImage function...
 
 const sampleVideos = [
   {
@@ -35,82 +17,65 @@ const sampleVideos = [
       theme: "Digital Dreamscape",
       mood: "幻想的",
       insight: "デジタルアートと自然の調和が織りなす、新しい次元の体験を表現しています。"
-    }
+    },
+    likesCount: 0
   }
 ];
 
 export function registerRoutes(app: Express) {
-  // Health check endpoint
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "healthy" });
-  });
+  // Existing routes...
 
-  // Get thumbnail URL
-  app.get("/api/thumbnail", async (req, res) => {
+  // Get video comments
+  app.get("/api/videos/:id/comments", async (req, res) => {
     try {
-      const thumbnailUrl = await getUnsplashImage();
-      res.json({ thumbnailUrl });
-    } catch (error) {
-      console.error('Error getting thumbnail:', error);
-      res.status(500).json({ error: "Failed to get thumbnail", thumbnailUrl: 'https://picsum.photos/seed/fallback/800/450' });
-    }
-  });
-
-  // Get all videos
-  app.get("/api/videos", async (req, res) => {
-    try {
-      console.log("Fetching all videos...");
-      const allVideos = await db.select().from(videos).orderBy(videos.createdAt);
-      
-      if (allVideos.length === 0) {
-        console.log("No videos found, inserting sample videos...");
-        const inserted = await db.insert(videos).values(sampleVideos).returning();
-        console.log("Sample videos inserted successfully");
-        res.json(inserted);
-      } else {
-        console.log(`Found ${allVideos.length} videos`);
-        res.json(allVideos);
-      }
-    } catch (error) {
-      console.error('Error fetching videos:', error);
-      res.status(500).json({ error: "Failed to fetch videos" });
-    }
-  });
-
-  // Get single video
-  app.get("/api/videos/:id", async (req, res) => {
-    try {
-      const video = await db
+      const videoComments = await db
         .select()
-        .from(videos)
-        .where(eq(videos.id, parseInt(req.params.id)))
-        .limit(1);
+        .from(comments)
+        .where(eq(comments.videoId, parseInt(req.params.id)))
+        .orderBy(comments.createdAt);
       
-      if (!video.length) {
-        return res.status(404).json({ error: "Video not found" });
-      }
-      
-      res.json(video[0]);
+      res.json(videoComments);
     } catch (error) {
-      console.error('Error fetching single video:', error);
-      res.status(500).json({ error: "Failed to fetch video" });
+      console.error('Error fetching comments:', error);
+      res.status(500).json({ error: "Failed to fetch comments" });
     }
   });
 
-  // Create new video
-  app.post("/api/videos", async (req, res) => {
+  // Create comment
+  app.post("/api/videos/:id/comments", async (req, res) => {
     try {
-      console.log("Creating new video with data:", req.body);
-      const video = await db
-        .insert(videos)
-        .values(req.body)
+      const comment = await db
+        .insert(comments)
+        .values({
+          videoId: parseInt(req.params.id),
+          authorName: req.body.authorName,
+          content: req.body.content,
+          isAdmin: false,
+        })
         .returning();
       
-      console.log("Video created successfully:", video[0].id);
+      res.json(comment[0]);
+    } catch (error) {
+      console.error('Error creating comment:', error);
+      res.status(500).json({ error: "Failed to create comment" });
+    }
+  });
+
+  // Like video
+  app.post("/api/videos/:id/like", async (req, res) => {
+    try {
+      const video = await db
+        .update(videos)
+        .set({
+          likesCount: sql`${videos.likesCount} + 1`,
+        })
+        .where(eq(videos.id, parseInt(req.params.id)))
+        .returning();
+      
       res.json(video[0]);
     } catch (error) {
-      console.error('Error creating video:', error);
-      res.status(500).json({ error: "Failed to create video" });
+      console.error('Error liking video:', error);
+      res.status(500).json({ error: "Failed to like video" });
     }
   });
 }

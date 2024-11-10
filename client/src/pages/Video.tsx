@@ -2,12 +2,35 @@ import { VideoPlayer } from "@/components/VideoPlayer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Link, useParams } from "wouter";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import type { Video } from "db/schema";
+import { Heart } from "lucide-react";
+import { CommentSection } from "@/components/CommentSection";
+import { useToast } from "@/hooks/use-toast";
 
 export default function VideoPage() {
   const { id } = useParams();
   const { data: video } = useSWR<Video>(`/api/videos/${id}`);
+  const { toast } = useToast();
+
+  const handleLike = async () => {
+    try {
+      const response = await fetch(`/api/videos/${id}/like`, {
+        method: "POST",
+      });
+
+      if (!response.ok) throw new Error("Failed to like video");
+
+      mutate(`/api/videos/${id}`);
+      toast({ title: "Success", description: "Video liked!" });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to like video",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (!video) {
     return (
@@ -29,9 +52,20 @@ export default function VideoPage() {
         <VideoPlayer url={video.videoUrl} />
 
         <Card className="mt-8 p-6">
-          <h1 className="text-3xl font-bold text-primary">
-            {video.title}
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-bold text-primary">
+              {video.title}
+            </h1>
+            <Button
+              variant="outline"
+              size="icon"
+              className="gap-2"
+              onClick={handleLike}
+            >
+              <Heart className={video.likesCount > 0 ? "fill-primary" : ""} />
+              <span>{video.likesCount || 0}</span>
+            </Button>
+          </div>
           <p className="mt-4 text-muted-foreground">{video.description}</p>
           
           <div className="mt-8">
@@ -43,6 +77,8 @@ export default function VideoPage() {
             </pre>
           </div>
         </Card>
+
+        <CommentSection videoId={parseInt(id)} />
       </div>
     </div>
   );

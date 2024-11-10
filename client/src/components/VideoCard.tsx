@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Link } from "wouter";
 import type { Video } from "db/schema";
 import { useState } from "react";
+import { Heart, MessageCircle } from "lucide-react";
 
 interface VideoCardProps {
   video: Video;
@@ -42,6 +43,16 @@ export function VideoCard({ video }: VideoCardProps) {
                 {element}
               </span>
             ))}
+          </div>
+          <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Heart className="h-4 w-4" />
+              {video.likesCount || 0}
+            </span>
+            <span className="flex items-center gap-1">
+              <MessageCircle className="h-4 w-4" />
+              {video.commentsCount || 0}
+            </span>
           </div>
         </div>
       </Card>
