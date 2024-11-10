@@ -8,7 +8,13 @@ export const videos = pgTable("videos", {
   description: text("description").notNull(),
   videoUrl: text("video_url").notNull(),
   thumbnailUrl: text("thumbnail_url").notNull(),
-  aiGenerated: jsonb("ai_generated").notNull(),
+  aiGenerated: jsonb("ai_generated").notNull().$type<{
+    generated: boolean;
+    elements?: string[];
+    theme?: string;
+    mood?: string;
+    insight?: string;
+  }>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

@@ -38,16 +38,17 @@ export async function generateAIContent(filename: string) {
   const element = elements[Math.floor(Math.random() * elements.length)];
   const mood = moods[Math.floor(Math.random() * moods.length)];
 
-  // Generate title and description with mystical elements
+  // Generate title in English but description in Japanese
   const title = `${theme}: Journey Through ${filename.split('.')[0]}`;
-  const description = `Experience a ${mood} journey through digital realms where ${element} dance in perfect harmony. This immersive creation transcends the boundaries between technology and consciousness, inviting viewers into a dimension where art and spirit converge in infinite possibility.`;
+  const description = `神秘的な${mood}の世界へようこそ。${element}が完璧なハーモニーを奏でる中、デジタルとスピリチュアルの境界を超えた没入型の体験が広がります。テクノロジーとスピリチュアリティが交差する新次元の世界で、無限の可能性を探求してください。`;
 
   return {
     title,
     description,
+    generated: true,
     theme,
     mood,
     elements: [element],
-    insight: `This piece channels the eternal dance between digital consciousness and spiritual awakening, revealing patterns that echo throughout the cosmic web of existence.`
+    insight: `デジタルな意識と精神的な目覚めの永遠なる舞踏を表現し、宇宙の織りなす模様の中に響き渡るパターンを映し出しています。`
   };
 }

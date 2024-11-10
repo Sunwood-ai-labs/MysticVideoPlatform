@@ -33,6 +33,16 @@ export function VideoCard({ video }: VideoCardProps) {
           <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
             {video.description}
           </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {video.aiGenerated?.elements?.map((element: string) => (
+              <span
+                key={element}
+                className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary transition-colors hover:bg-primary/20"
+              >
+                {element}
+              </span>
+            ))}
+          </div>
         </div>
       </Card>
     </Link>
