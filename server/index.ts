@@ -6,24 +6,10 @@ import { createServer } from "http";
 
 const app = express();
 
-// Configure CORS for development and production
-const corsOptions = {
-  origin: process.env.NODE_ENV === "development"
-    ? true  // Allow all origins in development
-    : /\.replit\.dev$/,  // Only allow replit.dev domains in production
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200
-};
+// Simple CORS configuration
+app.use(cors());
 
-// Handle preflight requests
-app.options('*', cors(corsOptions));
-
-// Apply CORS middleware early in the middleware chain
-app.use(cors(corsOptions));
-
-// Then add other middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -51,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
     }
 
     // Start server with proper port binding
-    const port = Number(process.env.PORT) || 3001;
+    const port = Number(process.env.PORT) || 3000;
     const HOST = "0.0.0.0";
 
     // Handle server errors

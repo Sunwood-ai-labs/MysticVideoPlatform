@@ -3,40 +3,13 @@ import { db } from "../db";
 import { videos } from "../db/schema";
 import { eq } from "drizzle-orm";
 
-// Sample videos data with gradient thumbnails
 const sampleVideos = [
   {
-    title: "Digital Butterflies in Luminous Space",
-    description: "An immersive journey through a mystical realm where digital butterflies dance in cascading waves of light, creating an ethereal spectacle that bridges the physical and digital worlds.",
+    title: "Mystical Garden",
+    description: "A journey through a luminous digital garden",
     videoUrl: "https://example.com/video1.mp4",
     thumbnailUrl: "https://picsum.photos/seed/mystical1/800/450",
-    aiGenerated: {
-      theme: "Digital Nature",
-      mood: "Ethereal",
-      elements: ["butterflies", "light", "water"]
-    }
-  },
-  {
-    title: "Garden of Celestial Flowers",
-    description: "A mesmerizing exploration of an endless garden where digital flowers bloom in perpetual motion, their petals creating patterns that reflect the cosmic dance of the universe.",
-    videoUrl: "https://example.com/video2.mp4",
-    thumbnailUrl: "https://picsum.photos/seed/mystical2/800/450",
-    aiGenerated: {
-      theme: "Digital Flora",
-      mood: "Transcendent",
-      elements: ["flowers", "patterns", "infinity"]
-    }
-  },
-  {
-    title: "Luminescent Pathways",
-    description: "Journey through corridors of living light where every step creates ripples in the digital fabric of space, forming an interactive symphony of color and movement.",
-    videoUrl: "https://example.com/video3.mp4",
-    thumbnailUrl: "https://picsum.photos/seed/mystical3/800/450",
-    aiGenerated: {
-      theme: "Interactive Light",
-      mood: "Dynamic",
-      elements: ["pathways", "light", "interaction"]
-    }
+    aiGenerated: { generated: true }
   }
 ];
 
@@ -64,7 +37,7 @@ export function registerRoutes(app: Express) {
       }
     } catch (error) {
       console.error('Error fetching videos:', error);
-      res.status(500).json({ error: "Failed to fetch videos", details: error instanceof Error ? error.message : "Unknown error" });
+      res.status(500).json({ error: "Failed to fetch videos" });
     }
   });
 
@@ -84,7 +57,7 @@ export function registerRoutes(app: Express) {
       res.json(video[0]);
     } catch (error) {
       console.error('Error fetching single video:', error);
-      res.status(500).json({ error: "Failed to fetch video", details: error instanceof Error ? error.message : "Unknown error" });
+      res.status(500).json({ error: "Failed to fetch video" });
     }
   });
 
@@ -101,7 +74,7 @@ export function registerRoutes(app: Express) {
       res.json(video[0]);
     } catch (error) {
       console.error('Error creating video:', error);
-      res.status(500).json({ error: "Failed to create video", details: error instanceof Error ? error.message : "Unknown error" });
+      res.status(500).json({ error: "Failed to create video" });
     }
   });
 }
